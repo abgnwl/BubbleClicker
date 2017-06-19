@@ -8,7 +8,7 @@
 
 ## 代码介绍
 * 使用VS2015，MFC框架
-* graph/graphDlg.h 和 graph/graphDlg.cpp 为定义和实现
+* 主要代码：graph/graphDlg.h 和 graph/graphDlg.cpp
 * 自定义边界，距离左、上、右20，距离底部120
 * 使用ellipse绘制圆，向上移动，并左右随机移动，模拟漂浮过程
 

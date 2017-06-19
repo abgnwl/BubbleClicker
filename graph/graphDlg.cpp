@@ -118,6 +118,7 @@ void CgraphDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
+// print the game area boundary
 void CgraphDlg::printBox()
 {
 	CDC *pDC = GetDC();
@@ -137,6 +138,7 @@ void CgraphDlg::printBox()
 	}
 }
 
+// clear the game area, with init color
 void CgraphDlg::clearBox()
 {
 	CDC *pDC = GetDC();
@@ -151,11 +153,7 @@ void CgraphDlg::clearBox()
 
 }
 
-
-// 如果向对话框添加最小化按钮，则需要下面的代码
-//  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
-//  这将由框架自动完成。
-
+// init function
 void CgraphDlg::OnPaint()
 {
 	if (IsIconic())
@@ -187,34 +185,33 @@ void CgraphDlg::OnPaint()
 	printBox();
 }
 
-//当用户拖动最小化窗口时系统调用此函数取得光标
-//显示。
 HCURSOR CgraphDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
+// start game
 void CgraphDlg::OnBnClickedOk()
 {
 	//clearBox();
-	SetTimer(1, flush, NULL);
-	SetTimer(2, create, NULL);
+	SetTimer(1, flush, NULL);				// flush the frame, per flush ms
+	SetTimer(2, create, NULL);				// create a bubble, per create ms
 	// TODO: 在此添加控件通知处理程序代码
 	// CDialogEx::OnOK();
 }
 
-
+// exit game
 void CgraphDlg::OnBnClickedCancel()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDialogEx::OnCancel();
 }
 
+// draw the circles in the list, with input color
 void drawCircle(std::list<node> &point, CDC *dc, int top, int left, int right, COLORREF color)
 {
 	CBrush *brush = new CBrush(color);
-	CBrush *old = dc->SelectObject(brush);
+	CBrush *old = dc->SelectObject(brush);		// change color
 	auto p = point.begin();
 	while (p != point.end())
 	{
@@ -234,6 +231,7 @@ void drawCircle(std::list<node> &point, CDC *dc, int top, int left, int right, C
 		}
 
 
+		// disappear or not
 		if (p->o.y - p->r < top)
 			p = point.erase(p);
 		else
@@ -242,9 +240,10 @@ void drawCircle(std::list<node> &point, CDC *dc, int top, int left, int right, C
 			p++;
 		}
 	}
-	dc->SelectObject(old);
+	dc->SelectObject(old);		// change color back
 }
 
+// timer
 void CgraphDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	CDC *dc = GetDC();
@@ -254,16 +253,16 @@ void CgraphDlg::OnTimer(UINT_PTR nIDEvent)
 	rect.left += side;
 	rect.top += side;
 	rect.bottom -= down + side;
-	if(nIDEvent == 2)
+	if(nIDEvent == 2)		//create a bubble timer, or flush timer
 	{
 		if (rand() & 1)
 		{
-			if (rand() % 6 == 0)  // 3 points
+			if (rand() % 6 == 0)  // 3 points, faster  or 1 point, slower
 			{
 				node temp;
 				temp.r = rand() % 6 + 6;	// r -> 2 - 5
 				temp.o.x = rand() % (int)(rect.right - rect.left - 2 * temp.r - 1) + rect.left + temp.r;
-				temp.v = rand() % 10 + 4;  // v-> 10 - 25
+				temp.v = rand() % 10 + 4;	// v-> 10 - 25
 				temp.o.y = rect.bottom - temp.r - 1 + temp.v;
 				temp.dir = rand() % 3 - 1;
 				point3.push_back(temp);
@@ -273,7 +272,7 @@ void CgraphDlg::OnTimer(UINT_PTR nIDEvent)
 				node temp;
 				temp.r = rand() % 8 + 8;	// r -> 6 - 13
 				temp.o.x = rand() % (int)(rect.right - rect.left - 2 * temp.r - 1) + rect.left + temp.r;
-				temp.v = rand() % 5 + 2;  // v-> 5 - 12
+				temp.v = rand() % 5 + 2;	// v-> 5 - 12
 				temp.o.y = rect.bottom - temp.r - 1 + temp.v;
 				temp.dir = rand() % 3 - 1;
 				point1.push_back(temp);
@@ -291,11 +290,13 @@ void CgraphDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
+// calc the distance between (x, y) and (xx, yy)
 inline int dis(int x, int y, int xx, int yy)
 {
 	return (xx - x) * (xx - x) + (yy - y) * (yy - y);
 }
 
+// test clickPoint is in one circle in the list or not
 bool testPoint(std::list<node> &point, CPoint clickPoint, int p, int &score)
 {
 	auto e = point.begin();
@@ -315,6 +316,7 @@ bool testPoint(std::list<node> &point, CPoint clickPoint, int p, int &score)
 	return false;
 }
 
+// int to string
 std::string itos(int i)
 {
 	std::ostringstream os;
@@ -322,6 +324,7 @@ std::string itos(int i)
 	return os.str();
 }
 
+// check the bubbles in the list, and update the score
 void CgraphDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值

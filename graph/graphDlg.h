@@ -7,13 +7,13 @@
 #include <vector>
 #include <list>
 #include "afxwin.h"
-class node
+class node		// circle
 {
 public:
-	CPoint o;
-	double r;
-	int v;
-	int dir;
+	CPoint o;	// circle o
+	double r;	// radio
+	int v;		// move up  speed
+	int dir;	// move left or right or not, -1/0/1 is left/not/right    
 };
 
 // CgraphDlg ¶Ô»°¿ò
@@ -37,22 +37,25 @@ protected:
 
 
 	// my variables
-	COLORREF background = RGB(255, 255, 255);
+	COLORREF background = RGB(255, 255, 255);		// init background color
 	COLORREF red = RGB(255, 0, 0);
 	COLORREF black = RGB(0, 0, 0);
 	COLORREF white = RGB(255, 255, 255);
-	const int down = 100;
-	const int side = 20;
-	const int flush = 50;
-	const int create = 200;
+	const int down = 100;							// distance to the bottom
+	const int side = 20;							// distance to left, top, right
+	const int flush = 50;							// move up per flush ms
+	const int create = 200;							// create a bubble per create ms
+
+	std::list<node> point1;							// circle, score 1
+	std::list<node> point3;							// circle, score 3
+
 	int score = 0;
 	// end variables
 
 	// my function
-	void printBox();
-	void clearBox();
-	std::list<node> point1;
-	std::list<node> point3;
+	void printBox();								// print the game area box
+	void clearBox();								// clear the area
+
 	// end function
 
 
